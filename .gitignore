@@ -1,0 +1,151 @@
+# ============================================================
+# AI 应用开发项目通用 .gitignore
+# ============================================================
+
+# ---------- 1. 密钥 / 环境变量（最高优先级，绝不能提交）----------
+.env
+.env.*
+.envrc
+*.env
+!.env.example
+!.env.sample
+!.env.template
+secrets.yaml
+secrets.json
+credentials.json
+*.pem
+*.key
+*.p12
+.service_account.json
+.anthropic/
+.openai/
+
+# ---------- 2. Python 运行环境 ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+ENV/
+.python-version
+pip-wheel-metadata/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+#---------- 3. 依赖锁文件（uv.lock / poetry.lock 建议提交，勿忽略）----------
+
+# ---------- 4. Jupyter / Notebook ----------
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+.jupyter/
+
+# ---------- 5. AI 模型与训练产物（体积大，且多为二进制）----------
+models/
+model/
+checkpoints/
+ckpt/
+runs/
+outputs/
+*.bin
+*.safetensors
+*.gguf
+*.ggml
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+*.hdf5
+*.mlmodel
+*.tflite
+
+# ---------- 6. 向量库 / Embedding 缓存 ----------
+.chroma/
+chroma/
+chroma.sqlite3
+*.faiss
+*.index
+*.ann
+vector_store/
+vectorstore/
+weaviate-data/
+milvus-data/
+qdrant_storage/
+lancedb/
+
+# ---------- 7. 数据与中间产物 ----------
+data/raw/
+data/cache/
+*.parquet
+*.arrow
+*.feather
+*.huggingface/
+.cache/
+.hf_cache/
+.torch/
+.transformers_cache/
+.datasets/
+
+# ---------- 8. 日志与调试产物 ----------
+chat_history.json
+*.log
+logs/
+log/
+debug.log
+wandb/
+mlruns/
+.tensorboard/
+*.trace.json
+
+# ---------- 9. 测试与静态检查缓存 ----------
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# ---------- 10. 前端 / Node（AI Demo、Web UI）----------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+.next/
+.nuxt/
+.output/
+.vite/
+.svelte-kit/
+dist-ssr/
+
+# ---------- 11. 编辑器与系统文件 ----------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.example.json
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ---------- 12. 本地工具会话数据 ----------
+.codebuddy/sessions/
+.codebuddy/teams/
+
+# ---------- 13. 本地临时目录 ----------
+tmp/
+temp/
+*.tmp
+*.bak
