@@ -66,6 +66,7 @@ outputs/
 # ---------- 6. 向量库 / Embedding 缓存 ----------
 .chroma/
 chroma/
+chroma_db/
 chroma.sqlite3
 *.faiss
 *.index
@@ -78,6 +79,8 @@ qdrant_storage/
 lancedb/
 
 # ---------- 7. 数据与中间产物 ----------
+# 运行时产物的 data/（如 ai-class03 上传的 PDF、向量库），如需提交示例数据请放在 docs/
+data/
 data/raw/
 data/cache/
 *.parquet

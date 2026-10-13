@@ -21,7 +21,20 @@ uv add streamlit langchain-openai python-dotenv
 # 运行命令
 
 ```sh
-# 运行
+# 使用uv运行
 uv run streamlit run app.py
 
 ```
+
+# 其它
+
+**pycache**/ 是 Python 自动生成的文件夹，你每次运行 python app.py 时，Python 内部会做一件事：
+把你的 .py 源代码 编译成字节码（.pyc 文件），方便下次更快加载。
+这些 .pyc 文件就存在 **pycache**/ 里。
+
+```text
+**pycache**/
+└── config.cpython-310.pyc
+```
+
+cpython-310 表示你用的是 CPython 3.10 版本。
