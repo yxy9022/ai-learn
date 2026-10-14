@@ -1,0 +1,16 @@
+[project]
+name = "ai-class05"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10.5"
+dependencies = [
+    "langchain-community>=0.4.2",
+    "langchain-openai>=1.7.1",
+    "langchain-postgres>=0.0.19",
+    "psycopg>=3.3.6",
+    "psycopg-binary>=3.3.6",
+    "pypdf>=6.20.1",
+    "python-dotenv>=1.2.4",
+    "streamlit>=1.65.0",
+]

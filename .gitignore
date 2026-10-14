@@ -83,6 +83,9 @@ lancedb/
 data/
 data/raw/
 data/cache/
+
+# PDF 文档：体积大且可能包含敏感信息，确实要随仓库提供时用 git add -f
+*.pdf
 *.parquet
 *.arrow
 *.feather
