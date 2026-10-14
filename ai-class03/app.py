@@ -96,6 +96,8 @@ def load_embeddings(key: str, base_url: str, model: str):
         openai_api_base=base_url,
         # 默认行为会先用 tiktoken 转成 token id 再发送，第三方兼容接口只接受文本，会报 400
         check_embedding_ctx_length=False,
+        # 单批最多送几条文本：LangChain 默认 1000，多数第三方接口限制远小于此
+        chunk_size=10,
     )
 
 
