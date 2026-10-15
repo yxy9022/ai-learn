@@ -12,12 +12,13 @@
 | 3 | [ai-class03](./ai-class03) | RAG（Chroma） | PDF 解析、文本切分、embedding、Chroma 向量库、检索后拼进提示词 |
 | 4 | [ai-class04](./ai-class04) | RAG（pgvector） | 把向量库换成 Postgres + pgvector，数据入库可查询、可备份 |
 | 5 | [ai-class05](./ai-class05) | RAG + 权限过滤 | 给片段打 `dept` 等元数据、检索时按用户部门 `filter`、模拟多身份登录 |
+| 6 | [ai-class06](./ai-class06) | 混合检索 | 增加 BM25 关键词检索（jieba 分词），两路结果用 RRF 融合 |
 
 ## 前置准备
 
 - **uv**（推荐）：包管理与运行，`uv run` 会自动创建 `.venv` 并安装依赖，不必手动 activate
 - **Python 3.10+**
-- **Docker**：`ai-class04` / `ai-class05` 需要跑 pgvector 容器（两者**共用**同一个 `ai-pg` 容器，但用不同集合：`ai_demo_docs` 与 `ai_demo_docs_v2`）
+- **Docker**：`ai-class04` / `ai-class05` / `ai-class06` 需要跑 pgvector 容器（三者**共用**同一个 `ai-pg` 容器，但用不同集合：`ai_demo_docs`、`ai_demo_docs_v2`、`ai_demo_docs_v3`）
 - **API Key**：对话统一用 DeepSeek；**向量化不能用 DeepSeek**（它没有 `/embeddings` 接口），需另备百炼 / OpenAI 等
 
 ## 运行方式
@@ -30,11 +31,12 @@ cd ai-class02 && uv run streamlit run app.py    # 网页
 cd ai-class03 && uv run streamlit run app.py    # RAG（Chroma）
 cd ai-class04 && uv run streamlit run app.py    # RAG（pgvector，需先启动数据库容器）
 cd ai-class05 && uv run streamlit run app.py    # RAG + 权限过滤（需数据库容器）
+cd ai-class06 && uv run streamlit run app.py    # 混合检索：向量 + BM25（需数据库容器）
 ```
 
 完整步骤见各目录下的 `README.md`。
 
-数据库相关的两个项目共用一张物理表 `langchain_pg_embedding`，靠集合名区分，清空数据时务必带上集合条件，避免误删另一个项目的数据。
+数据库相关的三个项目共用一张物理表 `langchain_pg_embedding`，靠集合名区分，清空数据时务必带上集合条件，避免误删另一个项目的数据。
 
 ## 项目约定
 
@@ -54,3 +56,5 @@ cd ai-class05 && uv run streamlit run app.py    # RAG + 权限过滤（需数据
 | 换向量模型后检索异常 | 不同模型维度不同，删除向量库（Chroma 目录或 pgvector 集合）后重建 |
 | 上传的文档只有某个身份能看到 | 上传时「文档所属部门」下拉框默认是第一项 `hr`，标签写进去就不会变；换部门重传，标 `public` 则所有人可见 |
 | pgvector 里查不到自己的数据 | 集合名混淆，或统计 SQL 没限定集合；用 `SELECT name FROM langchain_pg_collection;` 先看再查 |
+| `UndefinedColumn: column col.id does not exist` | 集合表主键是 **`uuid`** 不是 `id`；数据表列名是 `document` / **`cmetadata`**，不是 `content` / `metadata` |
+| BM25 搜中文没效果 | 按空格 `split()` 对中文无效，中文必须先分词（`jieba`） |
