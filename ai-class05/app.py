@@ -176,7 +176,9 @@ if uploaded is not None and uploaded.name:
             for chunk in chunks:
                 chunk.metadata["dept"] = doc_dept  # 部门：权限过滤的核心字段
                 chunk.metadata["uploaded_by"] = user["name"]  # 上传人，便于审计
-                chunk.metadata["source_file"] = uploaded.name  # 来源文件名，用于标注出处
+                chunk.metadata["source_file"] = (
+                    uploaded.name
+                )  # 来源文件名，用于标注出处
 
             # 3) 向量化并写入 pgvector
             vectorstore.add_documents(chunks)

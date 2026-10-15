@@ -78,7 +78,7 @@ mkdir ai-class04 && cd ai-class04
 uv init --no-package
 
 # 添加依赖
-uv add streamlit langchain-openai langchain-community langchain-postgres psycopg psycopg-binary python-dotenv pypdf
+uv add streamlit langchain-openai langchain-community langchain-postgres psycopg psycopg-binary python-dotenv pypdf rank_bm25
 
 # 运行
 uv run streamlit run app.py

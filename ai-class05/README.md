@@ -41,11 +41,11 @@ docs = retriever.invoke(prompt)
 
 真实项目里这里应是账号密码 / SSO，示例用三个按钮切换身份：
 
-| 用户 | 部门 `dept` | 权限等级 `clearance` |
-| --- | --- | --- |
-| 张三 | `hr` | 1 |
-| 李四 | `engineering` | 2 |
-| 王五 | `finance` | 1 |
+| 用户 | 部门 `dept`   | 权限等级 `clearance` |
+| ---- | ------------- | -------------------- |
+| 张三 | `hr`          | 1                    |
+| 李四 | `engineering` | 2                    |
+| 王五 | `finance`     | 1                    |
 
 `clearance` 已写入用户信息，可用于更细的「密级」过滤，当前示例只按部门过滤。
 
@@ -54,7 +54,7 @@ docs = retriever.invoke(prompt)
 直接复用 `ai-class04` 的 pgvector 容器即可（无需重建）：
 
 ```sh
-docker ps                      # 确认 ai-pg 在运行
+docker ps  # 确认 ai-pg 在运行
 docker exec -it ai-pg psql -U ai_user -d ai_kb -c "SELECT * FROM pg_extension WHERE extname = 'vector';"
 ```
 
@@ -79,13 +79,13 @@ uv run streamlit run app.py
 
 复制 `.env.example` 为 `.env` 并填写：
 
-| 变量 | 说明 |
-| --- | --- |
-| `DB_USER` / `DB_PASSWORD` / `DB_HOST` / `DB_PORT` / `DB_NAME` | Postgres 连接信息，与容器一致（端口 5433） |
-| `DEEPSEEK_API_KEY` | 对话模型密钥 |
-| `EMBEDDING_API_KEY` | 向量模型密钥（DeepSeek **不提供**向量接口，需另用一家） |
-| `EMBEDDING_BASE_URL` | 向量服务地址，如百炼 `https://dashscope.aliyuncs.com/compatible-mode/v1` |
-| `EMBEDDING_MODEL` | 向量模型名，如 `text-embedding-v3` |
+| 变量                                                          | 说明                                                                     |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `DB_USER` / `DB_PASSWORD` / `DB_HOST` / `DB_PORT` / `DB_NAME` | Postgres 连接信息，与容器一致（端口 5433）                               |
+| `DEEPSEEK_API_KEY`                                            | 对话模型密钥                                                             |
+| `EMBEDDING_API_KEY`                                           | 向量模型密钥（DeepSeek **不提供**向量接口，需另用一家）                  |
+| `EMBEDDING_BASE_URL`                                          | 向量服务地址，如百炼 `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| `EMBEDDING_MODEL`                                             | 向量模型名，如 `text-embedding-v3`                                       |
 
 `.env` 已被 `.gitignore` 忽略；也可以在侧边栏临时填写。
 
@@ -123,15 +123,15 @@ WHERE c.name = 'ai_demo_docs_v2' LIMIT 3;"
 
 ## 常见问题
 
-| 现象 | 原因与解决 |
-| --- | --- |
-| **上传的文档只有 hr 能看** | 「文档所属部门」下拉框默认第一项是 `hr`，上传时没改，元数据就标成了 `dept=hr`。重新选择部门后再上传；已入库的数据标签不会自动变，需 `DELETE FROM langchain_pg_embedding;` 后重传 |
-| 检索结果为空 | ① 文档部门与当前身份不匹配；② 换身份后要用对应用户的部门重新上传；③ 把部门选成 `public` 则所有人可见 |
-| 向量化报 `404` | DeepSeek 没有 `/embeddings` 接口，需换百炼 / OpenAI 等 |
-| 向量化报 `400 ... contents is neither str nor list of str` | 已设 `check_embedding_ctx_length=False`，直接发送文本 |
-| 向量化报 `400 ... batch size ... larger than 10` | 已设 `chunk_size=10`，限制单批条数 |
-| 连不上数据库 | 检查 `docker ps` 中 `ai-pg` 是否运行、`DB_PORT` 是否为 5433 |
-| 换向量模型后检索异常 | 维度不同，清空集合重建：`DELETE FROM langchain_pg_embedding;` |
+| 现象                                                       | 原因与解决                                                                                                                                                                       |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **上传的文档只有 hr 能看**                                 | 「文档所属部门」下拉框默认第一项是 `hr`，上传时没改，元数据就标成了 `dept=hr`。重新选择部门后再上传；已入库的数据标签不会自动变，需 `DELETE FROM langchain_pg_embedding;` 后重传 |
+| 检索结果为空                                               | ① 文档部门与当前身份不匹配；② 换身份后要用对应用户的部门重新上传；③ 把部门选成 `public` 则所有人可见                                                                             |
+| 向量化报 `404`                                             | DeepSeek 没有 `/embeddings` 接口，需换百炼 / OpenAI 等                                                                                                                           |
+| 向量化报 `400 ... contents is neither str nor list of str` | 已设 `check_embedding_ctx_length=False`，直接发送文本                                                                                                                            |
+| 向量化报 `400 ... batch size ... larger than 10`           | 已设 `chunk_size=10`，限制单批条数                                                                                                                                               |
+| 连不上数据库                                               | 检查 `docker ps` 中 `ai-pg` 是否运行、`DB_PORT` 是否为 5433                                                                                                                      |
+| 换向量模型后检索异常                                       | 维度不同，清空集合重建：`DELETE FROM langchain_pg_embedding;`                                                                                                                    |
 
 ## 目录结构
 
@@ -148,12 +148,12 @@ ai-class05/
 
 ## 与 ai-class04 的差异
 
-| 项目 | ai-class04 | ai-class05 |
-| --- | --- | --- |
-| 集合名 | `ai_demo_docs` | `ai_demo_docs_v2` |
-| 元数据 | 只有 PyPDFLoader 自带的页码 | 额外写入 `dept` / `uploaded_by` / `source_file` |
-| 检索 | `similarity_search(prompt, k=3)` | `as_retriever(search_kwargs={"k": 3, "filter": {"$or": [...]}})` |
-| 登录 | 无 | 模拟三个身份，按部门过滤 |
-| 回答展示 | 只有答案 | 答案 + 来源文件与部门标注 |
+| 项目     | ai-class04                       | ai-class05                                                       |
+| -------- | -------------------------------- | ---------------------------------------------------------------- |
+| 集合名   | `ai_demo_docs`                   | `ai_demo_docs_v2`                                                |
+| 元数据   | 只有 PyPDFLoader 自带的页码      | 额外写入 `dept` / `uploaded_by` / `source_file`                  |
+| 检索     | `similarity_search(prompt, k=3)` | `as_retriever(search_kwargs={"k": 3, "filter": {"$or": [...]}})` |
+| 登录     | 无                               | 模拟三个身份，按部门过滤                                         |
+| 回答展示 | 只有答案                         | 答案 + 来源文件与部门标注                                        |
 
 其余流程（读取 → 切块 → 向量化 → 入库 → 检索 → 生成）完全一致。
