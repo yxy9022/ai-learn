@@ -157,6 +157,14 @@ def load_vectorstore(_embeddings):
     )
 
 
+def page_label(d) -> str:
+    """片段所在页码。PyPDFLoader 的 page 从 0 开始，展示时 +1。"""
+    try:
+        return f"— 第 {int(d.metadata.get('page')) + 1} 页"
+    except (TypeError, ValueError):
+        return "— 页码未知"
+
+
 def bm25_tokenize(text: str) -> list[str]:
     """BM25 按"词"统计，中文没有空格，直接 split() 会把整句当成一个词，
     检索几乎失效。这里用 jieba 分词，再丢掉空白 token。"""
@@ -339,25 +347,38 @@ if prompt := st.chat_input("提问..."):
                 if not final_docs:
                     st.markdown("❌ 没有找到相关文档（可能你没有权限访问相关内容）")
                 else:
-                    context = "\n\n".join(d.page_content for d in final_docs)
-                    source_info = " | ".join(
-                        f"{d.metadata.get('source_file', '?')} "
-                        f"(dept={d.metadata.get('dept', '?')}, {tag})"
-                        for d, tag in zip(final_docs, final_tags)
+                    # 给每个片段编号，让模型按编号在正文里标注引用
+                    context = "\n\n".join(
+                        f"[{i}] {d.page_content}" for i, d in enumerate(final_docs, 1)
                     )
                     resp = llm.invoke(
                         [
                             HumanMessage(
-                                content=f"根据以下内容回答：\n{context}\n\n问题：{prompt}"
+                                content=(
+                                    "只依据下面【文档内容】回答，不要编造。"
+                                    "每个片段前有编号，如 [1]。"
+                                    "回答时，在你引用的句子末尾标注它的编号，"
+                                    "例如：……[1] 或 ……[2][3]。"
+                                    "如果文档里没有答案，就只回答：文档中没有提到。\n\n"
+                                    f"【文档内容】\n{context}\n\n问题：{prompt}"
+                                )
                             )
                         ]
                     )
-                    st.markdown(resp.content)
-                    st.caption(f"📎 来源：{source_info}")
+
+                    # 引文列表：编号 -> 文件名 + 页码（列表形式，每条单独一行）
+                    refs = "\n".join(
+                        f"- [{i}] `{d.metadata.get('source_file', '?')}` "
+                        f"{page_label(d)} · dept={d.metadata.get('dept', '?')}"
+                        for i, d in enumerate(final_docs, 1)
+                    )
+                    answer = f"{resp.content}\n\n**📚 引用来源**\n{refs}"
+                    st.markdown(answer)
                     st.caption(
                         f"🔍 向量 {len(vector_docs)} 条 / BM25 {len(bm25_docs)} 条 "
                         f"→ 融合后取 {len(final_docs)} 条"
                     )
+                    resp = AIMessage(content=answer)
 
         if resp:
             st.session_state.messages.append(AIMessage(content=resp.content))
